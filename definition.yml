@@ -1,6 +1,6 @@
 id: projected_tscan
-docker_repository: dynverse/dynmethods:projected_tscan
-container_url: https://github.com/dynverse/dynmethods/tree/master/containers/projected_tscan
+docker_repository: dynverse/ti_projected_tscan
+container_url: https://github.com/dynverse/ti_projected_tscan
 name: Projected TSCAN
 type: algorithm_test
 platform: R
