@@ -3,8 +3,9 @@ docker_repository: dynverse/ti_projected_tscan
 singularity_collection: 1569
 container_url: https://github.com/dynverse/ti_projected_tscan
 name: Projected TSCAN
-type: algorithm_test
+type: algorithm
 platform: R
+implementation_id: tscan
 trajectory_types:
 - linear
 - bifurcation
