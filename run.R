@@ -1,3 +1,7 @@
+#!/usr/local/bin/Rscript
+
+task <- dyncli::main()
+
 library(jsonlite)
 library(readr)
 library(dplyr)
@@ -9,16 +13,8 @@ library(igraph)
 #   ____________________________________________________________________________
 #   Load data                                                               ####
 
-data <- read_rds("/ti/input/data.rds")
-params <- jsonlite::read_json("/ti/input/params.json")
-
-#' @examples
-#' data <- dyntoy::generate_dataset(unique_id = "test", num_cells = 300, num_features = 300, model = "multifurcating") %>% c(., .$prior_information)
-#' params <- yaml::read_yaml("containers/tscan/definition.yml")$parameters %>%
-#'   {.[names(.) != "forbidden"]} %>%
-#'   map(~ .$default)
-
-counts <- data$counts
+counts <- task$counts
+params <- task$params
 
 #   ____________________________________________________________________________
 #   Infer trajectory                                                        ####
@@ -62,18 +58,16 @@ dimred_milestones <- cds_clus$clucenter
 rownames(dimred_milestones) <- as.character(seq_len(nrow(dimred_milestones)))
 colnames(dimred_milestones) <- colnames(dimred)
 
-# return output
-output <- lst(
-  cell_ids = rownames(dimred),
-  milestone_ids = rownames(dimred_milestones),
-  milestone_network = milestone_network,
-  dimred_milestones,
-  dimred,
-  grouping = cds_clus$clusterid,
-  timings = checkpoints
-)
-
 #   ____________________________________________________________________________
 #   Save output                                                             ####
 
-write_rds(output, "/ti/output/output.rds")
+output <- dynwrap::wrap_data(cell_ids = rownames(dimred)) %>%
+  dynwrap::add_dimred_projection(
+    milestone_network = milestone_network,
+    dimred = dimred,
+    dimred_milestones = dimred_milestones,
+    grouping = cds_clus$clusterid
+  ) %>%
+  dynwrap::add_timings(timings = checkpoints)
+
+output %>% dyncli::write_output(task$output)

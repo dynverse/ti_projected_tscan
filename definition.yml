@@ -1,47 +1,68 @@
-id: projected_tscan
-docker_repository: dynverse/ti_projected_tscan
-singularity_collection: 1569
-container_url: https://github.com/dynverse/ti_projected_tscan
-name: Projected TSCAN
-source: adaptation
-platform: R
-implementation_id: tscan
-trajectory_types:
-- linear
-- bifurcation
-- convergence
-- multifurcation
-- binary_tree
-- tree
-topology_inference: free
+method:
+  id: tscan
+  name: TSCAN
+  tool_id: tscan
+  source: adaptation
+  platform: R
+  url: https://github.com/zji90/TSCAN
+
+container:
+  url: https://github.com/dynverse/ti_tscan
+  docker: dynverse/ti_tscan
+
+wrapper:
+  type: dimred_projection
+  topology_inference: fixed
+  trajectory_types:
+  - linear
+  - bifurcation
+  - convergence
+  - multifurcation
+  - binary_tree
+  - tree
+  example: /code/example.R
+  input_required:
+  - counts
+
+
 parameters:
-  minexpr_percent:
+  - id: minexpr_percent
     type: numeric
     default: 0.0e+00
-    upper: 1.0
-    lower: 0.0e+00
-  minexpr_value:
+    distribution:
+      type: uniform
+      upper: 1.0
+      lower: 0.0e+00
+  - id: minexpr_value
     type: numeric
     default: 0.0e+00
-    upper: 10.0
-    lower: 0.0e+00
-  cvcutoff:
+    distribution:
+      type: uniform
+      upper: 10.0
+      lower: 0.0e+00
+  - id: cvcutoff
     type: numeric
     default: 0.0e+00
-    upper: 5.0
-    lower: 0.0e+00
-  clusternum_lower:
+    distribution:
+      type: uniform
+      upper: 5.0
+      lower: 0.0e+00
+  - id: clusternum_lower
     type: integer
     default: 2
-    upper: 20
-    lower: 2
-  clusternum_upper:
+    distribution:
+      type: uniform
+      upper: 20
+      lower: 2
+  - id: clusternum_upper
     type: integer
     default: 9
-    upper: 20
-    lower: 2
-  modelNames:
-    type: discrete
+    distribution:
+      type: uniform
+      upper: 20
+      lower: 2
+  - id: modelNames
+    type: character
     default: VVV
     values:
     - EII
@@ -58,13 +79,4 @@ parameters:
     - VEV
     - EVV
     - VVV
-  forbidden: clusternum_lower > clusternum_upper
-input:
-  format: rds
-  required: counts
-output:
-  format: rds
-  outputs:
-  - dimred_projection
-  - timings
-wrapper_type: dimred_projection
+  - forbidden: clusternum_lower > clusternum_upper
