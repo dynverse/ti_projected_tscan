@@ -1,6 +1,6 @@
 method:
-  id: tscan
-  name: TSCAN
+  id: projected_tscan
+  name: Projected TSCAN
   tool_id: tscan
   source: adaptation
   platform: R
@@ -20,10 +20,7 @@ wrapper:
   - multifurcation
   - binary_tree
   - tree
-  example: /code/example.R
-  input_required:
-  - counts
-
+  input_required: counts
 
 parameters:
   - id: minexpr_percent

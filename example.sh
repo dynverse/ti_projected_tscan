@@ -3,7 +3,7 @@
 # generate dataset with certain seed
 set.seed(1)
 data <- dyntoy::generate_dataset(
-  id = "specific_example/tscan",
+  id = "specific_example/projected_tscan",
   num_cells = 99,
   num_features = 100,
   model = "tree",
