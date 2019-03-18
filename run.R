@@ -19,9 +19,6 @@ params <- task$params
 #   ____________________________________________________________________________
 #   Infer trajectory                                                        ####
 
-# process clusternum
-clusternum <- seq(params$clusternum_lower, params$clusternum_upper, 1)
-
 # TIMING: done with preproc
 checkpoints <- list(method_afterpreproc = as.numeric(Sys.time()))
 
