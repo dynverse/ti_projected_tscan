@@ -45,11 +45,10 @@ parameters:
       lower: 0
       upper: 5
   - id: clusternum
-    type: range
+    type: integer_range
     default:
     - 2
     - 9
-    as_integer: TRUE
     lower_distribution:
       type: uniform
       lower: 2
