@@ -40,7 +40,7 @@ cds_prep <- TSCAN::preprocess(
 # cluster the data
 cds_clus <- TSCAN::exprmclust(
   cds_prep,
-  clusternum = clusternum,
+  clusternum = params$clusternum,
   modelNames = params$modelNames,
   reduce = TRUE
 )

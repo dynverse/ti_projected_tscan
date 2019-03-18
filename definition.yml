@@ -25,39 +25,39 @@ wrapper:
 parameters:
   - id: minexpr_percent
     type: numeric
-    default: 0.0e+00
+    default: 0
     distribution:
       type: uniform
-      upper: 1.0
-      lower: 0.0e+00
+      lower: 0
+      upper: 1
   - id: minexpr_value
     type: numeric
-    default: 0.0e+00
+    default: 0
     distribution:
       type: uniform
-      upper: 10.0
-      lower: 0.0e+00
+      lower: 0
+      upper: 10
   - id: cvcutoff
     type: numeric
-    default: 0.0e+00
+    default: 0
     distribution:
       type: uniform
-      upper: 5.0
-      lower: 0.0e+00
-  - id: clusternum_lower
-    type: integer
-    default: 2
-    distribution:
+      lower: 0
+      upper: 5
+  - id: clusternum
+    type: range
+    default:
+    - 2
+    - 9
+    as_integer: TRUE
+    lower_distribution:
       type: uniform
-      upper: 20
       lower: 2
-  - id: clusternum_upper
-    type: integer
-    default: 9
-    distribution:
-      type: uniform
       upper: 20
+    upper_distribution:
+      type: uniform
       lower: 2
+      upper: 20
   - id: modelNames
     type: character
     default: VVV
@@ -76,4 +76,3 @@ parameters:
     - VEV
     - EVV
     - VVV
-  - forbidden: clusternum_lower > clusternum_upper
