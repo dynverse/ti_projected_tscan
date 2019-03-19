@@ -14,7 +14,7 @@ library(igraph)
 #   Load data                                                               ####
 
 counts <- task$counts
-params <- task$params
+parameters <- task$parameters
 
 #   ____________________________________________________________________________
 #   Infer trajectory                                                        ####
@@ -29,16 +29,16 @@ cds_prep <- TSCAN::preprocess(
   logbase = 2,
   pseudocount = 1,
   clusternum = NULL,
-  minexpr_value = params$minexpr_value,
-  minexpr_percent = params$minexpr_percent,
-  cvcutoff = params$cvcutoff
+  minexpr_value = parameters$minexpr_value,
+  minexpr_percent = parameters$minexpr_percent,
+  cvcutoff = parameters$cvcutoff
 )
 
 # cluster the data
 cds_clus <- TSCAN::exprmclust(
   cds_prep,
-  clusternum = params$clusternum,
-  modelNames = params$modelNames,
+  clusternum = parameters$clusternum,
+  modelNames = parameters$modelNames,
   reduce = TRUE
 )
 
