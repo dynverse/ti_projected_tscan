@@ -1,30 +1,21 @@
-library(jsonlite)
-library(readr)
-library(dplyr)
-library(purrr)
+#!/usr/local/bin/Rscript
 
-library(TSCAN)
-library(igraph)
+task <- dyncli::main()
+
+library(dplyr, warn.conflicts = FALSE)
+library(purrr, warn.conflicts = FALSE)
+
+library(TSCAN, warn.conflicts = FALSE)
+library(igraph, warn.conflicts = FALSE)
 
 #   ____________________________________________________________________________
 #   Load data                                                               ####
 
-data <- read_rds("/ti/input/data.rds")
-params <- jsonlite::read_json("/ti/input/params.json")
-
-#' @examples
-#' data <- dyntoy::generate_dataset(unique_id = "test", num_cells = 300, num_features = 300, model = "multifurcating") %>% c(., .$prior_information)
-#' params <- yaml::read_yaml("containers/tscan/definition.yml")$parameters %>%
-#'   {.[names(.) != "forbidden"]} %>%
-#'   map(~ .$default)
-
-counts <- data$counts
+counts <- task$counts
+parameters <- task$parameters
 
 #   ____________________________________________________________________________
 #   Infer trajectory                                                        ####
-
-# process clusternum
-clusternum <- seq(params$clusternum_lower, params$clusternum_upper, 1)
 
 # TIMING: done with preproc
 checkpoints <- list(method_afterpreproc = as.numeric(Sys.time()))
@@ -36,16 +27,16 @@ cds_prep <- TSCAN::preprocess(
   logbase = 2,
   pseudocount = 1,
   clusternum = NULL,
-  minexpr_value = params$minexpr_value,
-  minexpr_percent = params$minexpr_percent,
-  cvcutoff = params$cvcutoff
+  minexpr_value = parameters$minexpr_value,
+  minexpr_percent = parameters$minexpr_percent,
+  cvcutoff = parameters$cvcutoff
 )
 
 # cluster the data
 cds_clus <- TSCAN::exprmclust(
   cds_prep,
-  clusternum = clusternum,
-  modelNames = params$modelNames,
+  clusternum = parameters$clusternum,
+  modelNames = parameters$modelNames,
   reduce = TRUE
 )
 
@@ -62,18 +53,16 @@ dimred_milestones <- cds_clus$clucenter
 rownames(dimred_milestones) <- as.character(seq_len(nrow(dimred_milestones)))
 colnames(dimred_milestones) <- colnames(dimred)
 
-# return output
-output <- lst(
-  cell_ids = rownames(dimred),
-  milestone_ids = rownames(dimred_milestones),
-  milestone_network = milestone_network,
-  dimred_milestones,
-  dimred,
-  grouping = cds_clus$clusterid,
-  timings = checkpoints
-)
-
 #   ____________________________________________________________________________
 #   Save output                                                             ####
 
-write_rds(output, "/ti/output/output.rds")
+output <- dynwrap::wrap_data(cell_ids = rownames(dimred)) %>%
+  dynwrap::add_dimred_projection(
+    milestone_network = milestone_network,
+    dimred = dimred,
+    dimred_milestones = dimred_milestones,
+    grouping = cds_clus$clusterid
+  ) %>%
+  dynwrap::add_timings(timings = checkpoints)
+
+output %>% dyncli::write_output(task$output)
